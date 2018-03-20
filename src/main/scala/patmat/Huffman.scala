@@ -80,16 +80,11 @@ object Huffman {
     */
   def times(chars: List[Char]): List[(Char, Int)] = {
 
-    val map = mutable.HashMap[Char, Int]()
+    val mapCounter = mutable.HashMap[Char, Int]()
     chars.foreach((f: Char) => {
-      map.put(f,map{f}+1)
+      mapCounter.put(f,mapCounter{f}+1)
     })
-
-    val l: mutable.MutableList[(Char, Int)] = mutable.MutableList[(Char, Int)]()
-    map.keysIterator.foreach((f: Char) => {
-      l += Tuple2(f, map{f})
-    })
-    l.toList
+    mapCounter.keys.map(x => (x, mapCounter{x})).toList
   }
 
   /**
