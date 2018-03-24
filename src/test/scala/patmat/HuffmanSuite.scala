@@ -51,4 +51,50 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  // times
+  test("check times for value count") {
+    val f = List('a', 'b', 'c', 'a', 'a', 'e', 'c')
+    val aList: List[(Char, Int)] = times(f)
+    assert(aList.contains(('a',3)))
+    assert(aList.contains(('b',1)))
+    assert(aList.contains(('c',2)))
+    assert(aList.contains(('e',1)))
+  }
+
+  // singleton
+  test("check for singleton tree") {
+    assert(singleton(List[CodeTree]()))
+    assert(!singleton(List[CodeTree](Leaf('a', 3), Leaf('b', 4))))
+    assert(singleton(List[CodeTree](Fork(Leaf('a', 3), Leaf('b', 3), List('a','b'), 3))))
+  }
+
+  test("check decoded message") {
+    assert(decode(frenchCode, secret) === List('h','u','f','f','m','a','n','e','s','t','c','o','o','l'))
+  }
+
+  test("check encoded secret") {
+    val message = List('h','u','f','f','m','a','n','e','s','t','c','o','o','l')
+    def frenchEncoder(message: List[Char]) = encode(frenchCode) _
+    assert(encode(frenchCode)(message)  === secret)
+    }
+
+  test("decode and encode with quickEncode a very short text should be identity") {
+    new TestTrees {
+      assert(decode(t2, quickEncode(t2)("ab".toList)) === "ab".toList)
+    }
+  }
+
+  test ("decode and encode with quickEncode a text should be identity") {
+    new TestTrees {
+      assert(decode(t2, quickEncode(t2)("abbbb".toList)) === "abbbb".toList)
+    }
+  }
+
+  test ("decode and encode with quickEncode a super long code") {
+    new TestTrees {
+      val longText = """We'll start by revisiting some concepts that we have learned from Principles of Functional Programming in Scala; collections, pattern matching, and functions. We'll then touch on for-comprehensions, a powerful way in Scala to traverse a list, process it, and return a new list. We'll see how to do queries with for-comprehensions as well as how the for-comprehension is "desugared" into calls to higher-order functions by the Scala compiler. Finally, we'll discuss what monads are, and how to verify that the monad laws are satisfied for a number of examples."""
+      val codeTree = createCodeTree(longText.toList)
+      assert(decode(codeTree, quickEncode(codeTree)(longText.toList)) === longText.toList)
+    }
+  }
 }
