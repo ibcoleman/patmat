@@ -175,23 +175,25 @@ object Huffman {
     * the resulting list of characters.
     */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-    var acc: mutable.MutableList[Char] = new mutable.MutableList[Char]()
-    def recur(subTree: CodeTree, subBits: List[Bit]): Unit = subTree match {
+    def recur(subTree: CodeTree, subBits: List[Bit], acc: List[Char]): List[Char] = subTree match {
       case Leaf(char, weight) => {
-        acc += char
-        if (subBits.nonEmpty)
-          recur(tree, subBits)
+        if (subBits.nonEmpty) {
+          recur(tree, subBits, char::acc)
+        } else {
+          char::acc
+        }
       }
       case Fork(left, right, _, _) => {
         if(subBits.head == 0) {
-          recur(left, subBits.tail)
+          recur(left, subBits.tail, acc)
         } else if (subBits.head ==  1) {
-          recur(right, subBits.tail)
+          recur(right, subBits.tail, acc)
+        } else {
+          acc
         }
       }
     }
-    recur(tree, bits)
-    acc.toList
+    recur(tree, bits, List[Char]()).reverse
   }
 
   /**
